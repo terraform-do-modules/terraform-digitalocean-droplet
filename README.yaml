@@ -11,7 +11,7 @@ name : Terraform Digitalocean Droplet
 license: "MIT"
 
 # Canonical GitHub repo
-github_repo: clouddrove/terraform-digitalocean-droplet
+github_repo: terraform-do-modules/terraform-digitalocean-droplet
 
 # Badges to display
 badges:
@@ -38,19 +38,22 @@ usage : |-
       module "droplet" {
         source             = "terraform-do-modules/droplet/digitalocean"
         version            = "0.15.0"
-        name               = "droplet"
+        name               = "app"
         environment        = "test"
-        label_order        = ["environment", "name"]
         droplet_count      = 1
-        region             = "bangalore-1"
-        ssh_keys           = [module.ssh_key.fingerprint]
+        region             = "blr1"
         vpc_uuid           = module.vpc.id
-        droplet_size       = "nano"
+        droplet_size       = "s-1vcpu-1gb"
+        image_name         = "ubuntu-18-04-x64"
+        ssh_key            = "ssh-rsa AAAAB3NfWmf2/dUA1KDU= test"
         monitoring         = false
-        private_networking = true
         ipv6               = false
         floating_ip        = true
         block_storage_size = 5
         user_data          = file("user-data.sh")
+      
+        ####firewall
+        allowed_ip    = ["0.0.0.0/0"]
+        allowed_ports = [22, 80]
       }
   ```

@@ -19,7 +19,7 @@ variable "label_order" {
 }
 
 #Module      : Droplet
-variable "droplet_enabled" {
+variable "enabled" {
   type        = bool
   default     = true
   description = "Flag to control the droplet creation."

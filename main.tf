@@ -46,7 +46,7 @@ data "digitalocean_image" "official" {
 #              naming convention.
 module "labels" {
   source      = "terraform-do-modules/labels/digitalocean"
-  version     = "0.15.0"
+  version     = "1.0.0"
   name        = var.name
   environment = var.environment
   label_order = var.label_order

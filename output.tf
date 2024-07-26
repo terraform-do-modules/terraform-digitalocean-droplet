@@ -99,6 +99,6 @@ output "ssh_keys" {
 
 output "public_ip_address" {
   description = "The IP Address of the resource"
-  value = try(digitalocean_reserved_ip.this[0].ip_address, null)
+  value       = try(digitalocean_reserved_ip.this[0].ip_address, null)
 
 }

@@ -27,7 +27,6 @@ module "droplet" {
   environment = local.environment
   region      = local.region
   vpc_uuid    = module.vpc.id
-  ssh_key     = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAAB= test"
   user_data   = file("user-data.sh")
   ####firewall
   inbound_rules = [

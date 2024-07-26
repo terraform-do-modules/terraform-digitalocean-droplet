@@ -18,3 +18,12 @@ repos:
       - id: debug-statements
       - id: check-yaml
       - id: check-added-large-files
+  - repo: https://github.com/equisoft-devops/pre-commit-tfsort
+    rev: v1.1.1
+    hooks:
+      - id: tfsort
+  - repo: https://github.com/mcole18/terraform-check-unused-variables.git
+    rev: v1.2.1
+    hooks:
+      - id: check-unused-vars
+        args: [--dir=., --var-file=variables.tf]

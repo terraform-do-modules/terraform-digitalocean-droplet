@@ -83,22 +83,22 @@ output "price_monthly" {
 
 #Module      : SSH KEY
 #Description : Provides a DigitalOcean SSH key resource to allow you to manage SSH keys for Droplet access.
-output "key_id" {
-  value       = digitalocean_ssh_key.default[*].id
-  description = "The unique ID of the key."
+output "ssh_keys" {
+  description = "SSH keys created in DigitalOcean"
+  value = {
+    for key, ssh_key in digitalocean_ssh_key.ssh_keys : # Using a for loop to iterate over each SSH key resource
+    key => {
+      id          = ssh_key.id
+      name        = ssh_key.name
+      fingerprint = ssh_key.fingerprint
+      public_key  = ssh_key.public_key
+    } if var.ssh_keys[key] != null # Check if the SSH key exists in var.ssh_keys
+  }
 }
 
-output "key_name" {
-  value       = digitalocean_ssh_key.default[*].name
-  description = "The name of the SSH key."
-}
 
-output "public_key" {
-  value       = digitalocean_ssh_key.default[*].public_key
-  description = "The text of the public key."
-}
+output "public_ip_address" {
+  description = "The IP Address of the resource"
+  value = try(digitalocean_reserved_ip.this[0].ip_address, null)
 
-output "fingerprint" {
-  value       = digitalocean_ssh_key.default[*].fingerprint
-  description = "The fingerprint of the SSH key."
 }

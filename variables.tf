@@ -109,12 +109,6 @@ variable "vpc_uuid" {
   description = "The ID of the VPC where the Droplet will be located."
 }
 
-variable "ssh_key" {
-  type        = string
-  default     = ""
-  description = "SSH key"
-}
-
 variable "key_name" {
   type        = string
   default     = ""
@@ -179,4 +173,20 @@ variable "outbound_rule" {
     }
   ]
   description = "List of objects that represent the configuration of each outbound rule."
+}
+
+variable "ssh_keys" {
+  description = "SSH keys to be created"
+  type = map(object({
+    name       = optional(string)
+    public_key = optional(string)
+  }))
+  default = {
+  }
+}
+variable "tags" {
+  description = "A list of the tags to be applied to this Droplet."
+  type        = list(any)
+  default     = []
+
 }

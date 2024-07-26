@@ -1,23 +1,10 @@
-#Module      : Label
-#Description : This terraform module is designed to generate consistent label names and
-#              tags for resources. You can use terraform-labels to implement a strict
-#              naming convention.
-module "labels" {
-  source      = "terraform-do-modules/labels/digitalocean"
-  version     = "1.0.1"
-  name        = var.name
-  environment = var.environment
-  managedby   = var.managedby
-  label_order = var.label_order
-}
-
 ##---------------------------------------------------------------------------------------------------------
 #Description : Provides a DigitalOcean SSH key resource to allow you to manage SSH keys for Droplet access.
 ##---------------------------------------------------------------------------------------------------------
-resource "digitalocean_ssh_key" "default" {
-  count      = var.enabled == true ? 1 : 0
-  name       = var.key_name == "" ? format("%s-key-%s", module.labels.id, (count.index)) : var.key_name
-  public_key = var.ssh_key != "" ? var.ssh_key : file(var.key_path)
+resource "digitalocean_ssh_key" "ssh_keys" {
+  for_each   = var.ssh_keys
+  name       = coalesce(each.key, each.value.name)
+  public_key = each.value.public_key
 }
 
 ##----------------------------------------------------------------------------------------------------------------
@@ -32,18 +19,13 @@ resource "digitalocean_droplet" "main" {
   backups           = var.backups
   monitoring        = var.monitoring
   ipv6              = var.ipv6
-  ssh_keys          = [join("", digitalocean_ssh_key.default[*].id)]
+  ssh_keys          = local.ssh_key_ids
   resize_disk       = var.resize_disk
   user_data         = var.user_data
   vpc_uuid          = var.vpc_uuid
   droplet_agent     = var.droplet_agent
   graceful_shutdown = var.graceful_shutdown
-  tags = [
-    format("%s-%s-%s", module.labels.id, "droplet", (count.index)),
-    module.labels.name,
-    module.labels.environment,
-    module.labels.managedby
-  ]
+  tags              = var.tags
 }
 
 ##----------------------------------------------------------------------------------------------------------------------------------
@@ -57,12 +39,7 @@ resource "digitalocean_volume" "main" {
   description              = "Block storage for ${element(digitalocean_droplet.main[*].name, count.index)}"
   initial_filesystem_label = var.block_storage_filesystem_label
   initial_filesystem_type  = var.block_storage_filesystem_type
-  tags = [
-    format("%s-%s-%s", module.labels.id, "volume", (count.index)),
-    module.labels.name,
-    module.labels.environment,
-    module.labels.managedby
-  ]
+  tags                     = var.tags
 }
 
 ##---------------------------------------------------------
@@ -78,7 +55,7 @@ resource "digitalocean_volume_attachment" "main" {
 ##---------------------------------------------------------------------------------------------------------------------------------------------------
 #Description : Provides a DigitalOcean Floating IP to represent a publicly-accessible static IP addresses that can be mapped to one of your Droplets.
 ##---------------------------------------------------------------------------------------------------------------------------------------------------
-resource "digitalocean_floating_ip" "main" {
+resource "digitalocean_reserved_ip" "this" {
   count  = var.floating_ip == true && var.enabled == true ? var.droplet_count : 0
   region = var.region
 }
@@ -86,11 +63,12 @@ resource "digitalocean_floating_ip" "main" {
 ##---------------------------------------------------------------------------------------------------------------------------------------------------
 #Description : Provides a DigitalOcean Floating IP to represent a publicly-accessible static IP addresses that can be mapped to one of your Droplets.
 ##---------------------------------------------------------------------------------------------------------------------------------------------------
-resource "digitalocean_floating_ip_assignment" "main" {
+resource "digitalocean_reserved_ip_assignment" "ip_assignment" {
   count      = var.floating_ip == true && var.enabled == true ? var.droplet_count : 0
-  ip_address = element(digitalocean_floating_ip.main[*].id, count.index)
+  ip_address = element(digitalocean_reserved_ip.this[*].ip_address, count.index)
   droplet_id = element(digitalocean_droplet.main[*].id, count.index)
-  depends_on = [digitalocean_droplet.main, digitalocean_floating_ip.main, digitalocean_volume_attachment.main]
+  depends_on = [digitalocean_droplet.main, digitalocean_reserved_ip.this, digitalocean_volume_attachment.main]
+
 }
 
 ##--------------------------------------------------------------------------------------------------------------------------
@@ -123,9 +101,5 @@ resource "digitalocean_firewall" "default" {
     }
   }
 
-  tags = [
-    module.labels.name,
-    module.labels.environment,
-    module.labels.managedby
-  ]
+  tags = var.tags
 }

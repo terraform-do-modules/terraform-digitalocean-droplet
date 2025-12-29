@@ -78,7 +78,7 @@ output "price_hourly" {
 
 output "price_monthly" {
   value       = digitalocean_droplet.main[*].price_monthly
-  description = "Droplet hourly price."
+  description = "Droplet monthly price."
 }
 
 #Module      : SSH KEY

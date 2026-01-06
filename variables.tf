@@ -109,18 +109,6 @@ variable "vpc_uuid" {
   description = "The ID of the VPC where the Droplet will be located."
 }
 
-variable "key_name" {
-  type        = string
-  default     = ""
-  description = "Name  (e.g. `it-admin` or `devops`)."
-}
-
-variable "key_path" {
-  type        = string
-  default     = ""
-  description = "Name  (e.g. `~/.ssh/id_rsa.pub` or `ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQD3F6tyPEFEzV0LX3X8BsXdMsQ`)."
-}
-
 variable "managedby" {
   type        = string
   default     = "terraform-do-modules"

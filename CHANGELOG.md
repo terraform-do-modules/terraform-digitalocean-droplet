@@ -1,3 +1,17 @@
+## [1.0.3] - 2026-02-06
+
+### Changes
+- 🐛 fix: update tf-checks workflow to match available examples
+- ⬆️ upgrade: update examples to use provider >= 2.70.0
+- 📚 Add comprehensive CONTRIBUTING.md
+- ⬆️ Upgrade provider & standardize workflows
+- 📝 Update CHANGELOG for v1.0.2
+- chore: update Terraform version requirement to >= 1.5.4
+- Merge pull request #36 from terraform-do-modules/dependabot/github_actions/clouddrove/github-shared-workflows/dot-github/workflows/tf-checks.yml-1.4.1
+- build(deps): bump clouddrove/github-shared-workflows/.github/workflows/tf-checks.yml
+- Merge pull request #35 from terraform-do-modules/fix/workflow
+- fix: removed unused variables
+
 # Changelog
 All notable changes to this project will be documented in this file.
 

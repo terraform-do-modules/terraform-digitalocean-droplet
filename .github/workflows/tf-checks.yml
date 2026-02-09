@@ -1,7 +1,7 @@
 name: tf-checks
 on:
   push:
-    branches: [ smurf-rollout ]
+    branches: [ master ]
   pull_request:
   workflow_dispatch:
 

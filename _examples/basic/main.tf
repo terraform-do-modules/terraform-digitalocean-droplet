@@ -34,7 +34,7 @@ module "droplet" {
 
   ssh_keys = {
     "app-key" = {
-      public_key = file("~/.ssh/id_rsa.pub")
+      public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQExample1234567890 example@basic"
     }
   }
 

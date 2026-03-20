@@ -8,6 +8,7 @@ jobs:
   basic-example:
     if: github.actor != 'dependabot[bot]'
     uses: clouddrove/github-shared-workflows/.github/workflows/stf-checks.yml@v2
+
     with:
       provider: none
       working_directory: './_examples/basic/'
